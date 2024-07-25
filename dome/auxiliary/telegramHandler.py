@@ -77,10 +77,11 @@ class TelegramHandler:
             except Exception:
                 # probably the message has denied HTML tags
                 # trying again without HTML parsing
-                processed_text = response.replace('<b><i>', '__**').replace('</b></i>', '**__')
-                processed_text = processed_text.replace('<b>', '**').replace('</b>', '**')
-                processed_text = processed_text.replace('<i>', '__').replace('</i>', '__')
-                update.message.reply_text(processed_text, parse_mode='Markdown')
+                if response:
+                    processed_text = response.replace('<b><i>', '__**').replace('</b></i>', '**__')
+                    processed_text = processed_text.replace('<b>', '**').replace('</b>', '**')
+                    processed_text = processed_text.replace('<i>', '__').replace('</i>', '__')
+                    update.message.reply_text(processed_text, parse_mode='Markdown')
 
             self.__tryagain = True  # msg processed, then the control variable is set to True
 

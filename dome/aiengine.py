@@ -10,8 +10,8 @@ from transformers import pipeline
 from dome.auxiliary.DAO import DAO
 from dome.auxiliary.enums.intent import Intent
 from dome.config import (PNL_GENERAL_THRESHOLD, USELESS_EXPRESSIONS_FOR_INTENT_DISCOVERY, TIMEOUT_MSG_PARSER,
-                         DEBUG_MODE, USE_PARSER_CACHE, HUGGINGFACE_TOKEN, WHERE_CLAUSE_WORDS, INTENT_MAP,
-                         PRINT_DEBUG_MSGS, DATE_KEYWORDS, ANALYTICS)
+                         DEBUG_MODE, USE_PARSER_CACHE, WHERE_CLAUSE_WORDS, HUGGINGFACE_TOKEN, INTENT_MAP,
+                         PRINT_DEBUG_MSGS, DATE_KEYWORDS, ANALYTICS, MODELS_API_URLS, MODEL_SERVICE)
 from dome.treatmentengine import TreatmentEngine
 from util import list_util
 import tests.tests
@@ -147,25 +147,28 @@ class AIEngine(DAO):
         return False
 
     @staticmethod
-    def __call_remote_model(model, input_text):
-        api_url = "http://localhost:11434/api/generate"
-        payload = {
-        "model": model,
-        "prompt": input_text,
-        "stream": False  
-        }
-        headers = {
-        "Content-Type": "application/json"
-        }
-        print("model")
-        print(model)
-        print("input")
-        print(input_text)
-        __response = requests.post(api_url, headers=headers, json=payload)
-        return __response.json()
+    def __call_remote_model(api_url, input_text):
+        if MODEL_SERVICE == 'huggingface':
+            payload = {"inputs": input_text, "options": {"use_cache": True, "wait_for_model": True}}
+            authorization={"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
+            __response = requests.post(api_url, headers=authorization, json=payload)
+            answer = __response.json()[0]['generated_text']
+        else:
+            payload = {
+            "model": api_url,
+            "prompt": input_text,
+            "stream": False  
+            }
+            authorization = {
+            "Content-Type": "application/json"
+            }
+            api_url = "http://localhost:11434/api/generate"
+            __response = requests.post(api_url, headers=authorization, json=payload)
+            answer = __response.json()['response']
+        return answer
 
     @staticmethod
-    def __prompt_remote_model(model, question_, context_, options_=None, only_question=False):
+    def __prompt_remote_model(api_url, question_, context_, options_=None, only_question=False):
         input_text = '-QUESTION: %s-CONTEXT: %s' % (question_ + '\n', context_)
         if options_:
             input_text += '\n-OPTIONS: %s' % options_
@@ -175,21 +178,18 @@ class AIEngine(DAO):
             print('PROMPT -------------------')
             print(input_text)
             print('--------------------------')
-        return AIEngine.__call_remote_model(model, input_text)
-
-    MODELS = [  
-        'llama3',
-        'phi3'
-    ]
+        return AIEngine.__call_remote_model(api_url, input_text)
 
     @staticmethod
     def question_answerer_remote(question, context, options='', only_question=False, model=0):
+        if MODEL_SERVICE == 'huggingface':
+            url = MODELS_API_URLS[0][model]
+        else:
+            url = MODELS_API_URLS[1][model]
         answers_keys = set()
         last_answer = None
-        last_answer = AIEngine.__prompt_remote_model(AIEngine.MODELS[model], question, context, options, only_question)
-        print("last answer")
+        last_answer = AIEngine.__prompt_remote_model(url, question, context, options, only_question)
         print(last_answer)
-        last_answer = last_answer['response']
         last_answer = {"answer": last_answer}
 
         if DEBUG_MODE and PRINT_DEBUG_MSGS:
@@ -292,6 +292,7 @@ class AIEngine(DAO):
             return self.__AIE
 
         def __getIntentFromMsg(self) -> Intent:
+            treater_obj = TreatmentEngine(self, self.__Test)
             # get the intent from the user_msg
             # the intent is the most likely class of the zero-shot-classification pipeline
             # considering the user_msg as a text to classify
@@ -323,7 +324,8 @@ class AIEngine(DAO):
                                                "message is: '" + self.user_msg + "'"
             options = "Yes, No"
             question_answer = self.question_answerer(question, context, options)
-            if question_answer['answer'] == 'No':
+            treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+            if treated_answer == 'No':
                 return Intent.MEANINGLESS
             # else: the user_msg makes some sense
 
@@ -334,16 +336,15 @@ class AIEngine(DAO):
                                                "current message is: '" + self.user_msg + "'"
             options = "CREATE, READ, UPDATE, DELETE"
             question_answer = self.question_answerer(question, context, options)
-            if question_answer['answer'] == 'CREATE':
+            treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+            if treated_answer == 'CREATE':
                 return Intent.ADD
-            elif question_answer['answer'] == 'READ':
+            elif treated_answer == 'READ':
                 return Intent.READ
-            elif question_answer['answer'] == 'UPDATE':
+            elif treated_answer == 'UPDATE':
                 return Intent.UPDATE
-            elif question_answer['answer'] == 'DELETE':
+            elif treated_answer == 'DELETE':
                 return Intent.DELETE
-            elif question_answer['answer'] == 'CRUD':
-                return Intent.READ
             else:  # the user's message intention does not refer to a CRUD operation
                 question = "Is the user's message intention refers to a greeting?"
                 context = self.get_bot_context() + "\nSo, answer me if the user's current message refers to a " \
@@ -352,7 +353,8 @@ class AIEngine(DAO):
                           self.user_msg + "'"
                 options = "Yes, No"
                 question_answer = self.question_answerer(question, context, options)
-                if question_answer['answer'] == 'Yes':
+                treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+                if treated_answer == 'Yes':
                     return Intent.GREETING
                 else:
                     question = "Is the user's message intention refers to a goodbye?"
@@ -361,7 +363,8 @@ class AIEngine(DAO):
                                                        "goodbye. \nThe user's current message is: '" + self.user_msg + \
                               "'"
                     question_answer = self.question_answerer(question, context, options)
-                    if question_answer['answer'] == 'Yes':
+                    treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+                    if treated_answer == 'Yes':
                         return Intent.GOODBYE
                     else:
                         question = "Is the user's message intention refers to a help?"
@@ -369,7 +372,8 @@ class AIEngine(DAO):
                                                            "help. \nFollow some examples of help:\n- 'help me'; help. " \
                                                            "\nThe user's current message is: '" + self.user_msg + "'"
                         question_answer = self.question_answerer(question, context, options)
-                        if question_answer['answer'] == 'Yes':
+                        treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+                        if treated_answer == 'Yes':
                             return Intent.HELP
                         else:
                             question = "Is the user's message intention refers to a confirmation?"
@@ -378,7 +382,8 @@ class AIEngine(DAO):
                                                                "confirmation:\n- 'ok'; 'yes'; 'yep'. \nThe user's " \
                                                                "current message is: '" + self.user_msg + "'"
                             question_answer = self.question_answerer(question, context, options)
-                            if question_answer['answer'] == 'Yes':
+                            treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+                            if treated_answer == 'Yes':
                                 return Intent.CONFIRMATION
                             else:
                                 question = "Is the user's message intention refers to a cancellation?"
@@ -388,7 +393,8 @@ class AIEngine(DAO):
                                                                    "The user's current message is: '" + self.user_msg + \
                                           "'"
                                 question_answer = self.question_answerer(question, context, options)
-                                if question_answer['answer'] == 'Yes':
+                                treated_answer = treater_obj.treat(question_answer['answer'], request='get_intent')
+                                if treated_answer == 'Yes':
                                     return Intent.CANCELLATION
             # else
             return Intent.MEANINGLESS
@@ -397,6 +403,7 @@ class AIEngine(DAO):
             return self.__AIE.entitiesAreSimilar(entity1, entity2)
 
         def __get_entity_class_from_msg(self) -> str:
+            treater_obj = TreatmentEngine(self, self.__Test)
             question = "What is the entity class that the user's message refers to?"
             context = self.get_bot_context() + "\nThe user's message intent is '" + self.intent.name + "'."
             context += "\nNow, the chatbot need discover the entity class that the user's message refers to, " \
@@ -446,7 +453,8 @@ class AIEngine(DAO):
                 question += '\n\nUser request: ' + self.user_msg
                 question += '\nEntity class: '
                 response = self.__AIE.question_answerer_remote(question, context, options, True)
-                entity_class_candidate = response['answer']
+                treated_response = treater_obj.treat(response['answer'], request='get_entity')
+                entity_class_candidate = treated_response
             if entity_class_candidate == 'CRUD' or entity_class_candidate == self.intent:
                 # it's an error. Probably the user did not inform the entity class in the right way.
                 return None
@@ -538,11 +546,14 @@ class AIEngine(DAO):
                 context = "user's message = " + self.user_msg
 
                 where_clause = self.question_answerer(question, context, options)
-                where_clause_idx_start = self.user_msg.find(where_clause['answer'])
+                where_clause = treater_obj.treat(where_clause['answer'], request='get_where_clause', processed_attributes=processed_attributes)
+                print("where clause")
+                print(where_clause)
+                where_clause_idx_start = self.user_msg.find(where_clause)
+                print(where_clause_idx_start)
 
                 if where_clause_idx_start > -1:
-                    where_clause_idx_end = where_clause_idx_start + len(where_clause['answer'])
-                    where_clause = where_clause['answer']
+                    where_clause_idx_end = where_clause_idx_start + len(where_clause)
                     user_msg_without_where_clause = self.user_msg.replace(where_clause, '')
 
             def idx_in_where_clause(idx):
@@ -606,11 +617,13 @@ class AIEngine(DAO):
                         elif self.tokens[j]['entity'] == 'NOUN' and j != entity_class_token_idx:
                             if entity_find is not None:
                                 processed_attributes[self.tokens[entity_class_token_idx]['word']] = entity_find
+                                self.__Test.generated_response = processed_attributes
                                 return processed_attributes, where_clause_attributes
 
                             if self.tokens[j]['word'] == 'today':  # if the user is refering to now
                                 date = datetime.now().strftime("%Y-%m-%d")
                                 processed_attributes['dome_created_at'] = date
+                                self.__Test.generated_response = processed_attributes
                                 return processed_attributes, where_clause_attributes
 
                             token_j = self.tokens[j]
@@ -631,6 +644,7 @@ class AIEngine(DAO):
                         elif 'last' in self.tokens[j]['word']:
                             processed_attributes['last_clause'] = 'true'
                             self.entity_class = self.entity_class.replace('last', '').replace('_', '')
+                            self.__Test.generated_response = processed_attributes
                             return processed_attributes, where_clause_attributes
                         else:
                             j += 1
@@ -654,13 +668,15 @@ class AIEngine(DAO):
                                                                "\nAnswer me with the exact substring of the sentence fragment." \
                                                                "\nAnswer me with only the value of the attribute."
                                                                "\nThe answer must be diferent from '" + attribute_name + "'."
-                                                      , context=__get_attributes_context(attribute_name, token_j), model=1)
+                                                      , context=__get_attributes_context(attribute_name, token_j), model=0)
                     # update the j index to the next token after the attribute value
                     # get the end index in the original msg
 
                     # treatment here
+                    print("first answer")
+                    print(response)
+                    response['answer'] = treater_obj.treat(response['answer'], attribute_name, 'get_attribute', processed_attributes)
                     print("answer")
-                    response['answer'] = treater_obj.treat(attribute_name, response['answer'], processed_attributes)
                     print(response)
                     att_value_idx_end = self.user_msg.find(response['answer'], token_j['end'])
                     print(att_value_idx_end)
@@ -680,20 +696,26 @@ class AIEngine(DAO):
 
                     # add the pair of attribute name and attribute value in the result list
                     attribute_value = response['answer']
+                    print(attribute_value)
                     # clean the attribute value
                     if len(attribute_value) > 0:  # prevent errors
                         if not attribute_value[0].isalnum():  # see test.test_add_5()
                             attribute_value = attribute_value[1:]
-                        if attribute_value[-1] in ['"', "'"]:
-                            attribute_value = attribute_value[:-1]
+                        if len(attribute_value) > 0:
+                            if attribute_value[-1] in ['"', "'"]:
+                                attribute_value = attribute_value[:-1]
 
                     # update the attribute_name replacing special characters for '_'
                     attribute_name = re.sub(r'[^a-zA-Z0-9_]', '_', attribute_name)
 
                     # add the attribute pair to the correspondent map
                     if idx_in_where_clause(att_value_idx_end):
+                        print("where clause")
                         where_clause_attributes[attribute_name] = attribute_value
                     else:
+                        print("aq foi")
+                        print("processed atrributes")
+                        print(processed_attributes)
                         processed_attributes[attribute_name] = attribute_value
 
                     if att_value_idx_end > -1:
@@ -719,7 +741,8 @@ class AIEngine(DAO):
             # else:
             #     print("is not acceptable")
             print("2")
-            print(attribute_value)
+            print("gerou:")
+            print(processed_attributes)
             self.__Test.generated_response = processed_attributes
             return processed_attributes, where_clause_attributes
 

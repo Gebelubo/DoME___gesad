@@ -63,12 +63,13 @@ logger.setLevel(logging.INFO)
 
 class AutonomousController:
     def __init__(self, SE):
-        self.__Test = tests.Test("input.json", "output.json")
+        self.__Test = tests.Test("input-dome.json", "output.json")
         self.__SE = SE  # Security Engine object
         self.__IC = InterfaceController(self)  # Interface Controller object
-        self.__DE = DomainEngine(self, self.__Test)  # Domain Engine object
+        self.__DE = DomainEngine(self)  # Domain Engine object
         self.__AIE = AIEngine(self)  # Artificial Intelligence Engine object
         self.__AE = AnalyticsEngine(self) # Analytics toolset
+        self.start_time = time.time()
 
     def __monitor(self):
         pass
@@ -165,13 +166,37 @@ class AutonomousController:
         logger.info('[user_id: %s] user_msg: %s', user_data['id'], msg)
         try:
             if config.TEST_MODE:
-                for index, input in enumerate(self.__Test.input):
-                    response = self.app_chatbot_msg_process(input['input'], user_data=user_data)
+                index = 0
+                test_quantity = config.TEST_QUANTITY
+                print('tamanho:')
+                print(len(self.__Test.previous_output))
+                print('tamanho input')
+                print(len(self.__Test.input))
+                for input in self.__Test.input:
+                    if any(input.get('input') == output.get('input') for output in self.__Test.previous_output):
+                        print("achou")
+                        index += 1
+                        continue
+                    print("ESCREVEU")
+                    self.__Test.write()
+                    test_quantity=test_quantity+index
+                    print("index")
+                    print(index)
+                    print(input)
+                    logger.info("test: " + input['input'])
+                    if input['input'] != '':
+                        response = self.app_chatbot_msg_process(input['input'], user_data=user_data)
+                    else:
+                        break
+                    print("response")
                     print(response)
                     self.__Test.insert_data(index)
+                    index += 1 
                 config.TEST_MODE=False
                 msg = "hi"
                 self.__Test.write()
+                execution_time = time.time() - self.start_time
+                logger.info("time = " + str(execution_time))
             response = self.app_chatbot_msg_process(msg, user_data=user_data)
         except BaseException as e:
             print('GENERAL_FAILURE', e)
@@ -179,7 +204,11 @@ class AutonomousController:
                         'response_msg': 'Sorry, but I could not complete the operation. Ocurred the error: <b>' + str(e) + '</b>.\nPlease, try again using other words.\n(say <b>HELP</b> for examples)', 
                         'user_data': user_data, 
                         'error': e}
+            logger.error('error: %s \nuser_msg: %s', str(e), msg)
             self.clear_opr(user_data)
+            config.TEST_MODE = False
+            msg = 'hi'
+            self.__Test.write()
 
         # logging the message handled
         self.__SE.save_msg_handle_log(msg, user_data['id'], response, time.perf_counter() - t0)
@@ -218,6 +247,7 @@ class AutonomousController:
                 "user_data": user_data,
                 "error": e,
             }
+            logger.error('error: %s \nuser_msg: %s', str(e), msg)
             self.clear_opr(user_data)
 
         # logging the message handled
@@ -290,6 +320,11 @@ class AutonomousController:
         if len(msg) <= MAX_USER_MSG_SIZE:
 
             parser = self.__AIE.get_msg_parser(msg)
+            
+            if config.TEST_MODE:
+                self.__Test.add_intent(str(parser.intent))
+                self.__Test.add_entity(str(parser.entity_class))
+                return ''
             if parser.intent == Intent.CONFIRMATION:
                 if (
                     user_data["pending_intent"] is not None

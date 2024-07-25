@@ -1,7 +1,648 @@
 [
   {
-    "input": "add student with name Victor and note 10",
-    "expected_query": "INSERT OR REPLACE INTO managedsys_web_customer(dome_created_at, dome_updated_at, name) values((datetime('now', 'localtime')), (datetime('now', 'localtime')), 'Gabriel')",
-    "expected_result": "Ok! I got it!\nWe are going to <b>ADD</b> a <b>Customer</b>.\nWith <b>name: <i>Gabriel</i></b>.\nSay <b>OK</b> to confirm or <b>CANCEL</b> to cancel this operation."
+    "input": "add person with age 10",
+    "expected_result": {
+    	"age" : "10"
+    }
+  },
+  {
+    "input": "include a student with name Pedro",
+    "expected_result": {
+    	"name" : "Pedro"
+    }
+  },
+  {
+    "input": "append a teacher with name Paulo Henrique",
+    "expected_result": {
+    	"name" : "Paulo Henrique"
+    }
+  },
+  {
+    "input": "create a customer with name Alan Bandeira and subtotal 12,99",
+    "expected_result": {
+    	"name" : "Alan Bandeira",
+    	"subtotal" : "12,99"
+    }
+  },
+  {
+    "input": "insert person with name Gabriel",
+    "expected_result": {
+    	"name" : "Gabriel"
+    }
+  },
+   {
+    "input": "show me all the persons with name Lucas",
+    "expected_result": {
+    	"name" : "Lucas"
+    }
+  },
+   {
+    "input": "give me all the customers where subtotal = 50,8",
+    "expected_result": {
+    	"subtotal" : "50,8"
+    }
+  },
+   {
+    "input": "remove the person with age 45",
+    "expected_result": {
+    	"age" : "45"
+    }
+  },
+   {
+    "input": "update the person with name Gabriel and set the age 14",
+    "expected_result": {
+    	"age" : "14"
+    }
+  },
+   {
+    "input": "please, show me all the persons where has name Ricardo",
+    "expected_result": {
+    	"name" : "Ricardo"
+    }
+  },
+   {
+    "input": "insert customer with name Gabriel, age 20, subtotal = '39,99', discount = '10%' and CPF = '123.456.789-0'",
+    "expected_result": {
+    	"name" : "Gabriel",
+    	"age" : "20",
+    	"subtotal" : "39,99",
+    	"discount" : "10%",
+    	"CPF" : "123.456.789-0"
+    }
+  },
+   {
+    "input": "erase the customer with id = 1",
+    "expected_result": {
+    	"id" : "1"
+    }
+  },
+   {
+    "input": "remove a person where name is Jorge",
+    "expected_result": {
+    	"name" : "Jorge"
+    }
+  },
+    {
+    "input": "return to me all the customers where subtotal is 45,99",
+    "expected_result": {
+    	"subtotal" : "45,99"
+    }
+  },
+    {
+    "input": "please, update the student with NPC1 = 5 and set the result = reproved",
+    "expected_result": {
+    	"result" : "reproved"
+    }
+  },
+    {
+    "input": "update the student with NPC1 = 10 and set result 'aproved'",
+    "expected_result": {
+    	"result" : "aproved"
+    }
+  },
+    {
+    "input": "add for me a person with name Gabriel Luiz Barros, and age = '30' and gender = 'male'",
+    "expected_result": {
+    	"name" : "Gabriel Luiz Barros",
+    	"age" : "30",
+    	"gender" : "male"
+    }
+  },
+    {
+    "input": "create a song with title 'eleanor rigby', artist 'beatles', album: revolver and duration = 2:06",
+    "expected_result": {
+    	"title" : "eleanor rigby",
+    	"artist" : "beatles",
+    	"album" : "revolver",
+    	"duration" : "2:06"
+    }
+  },
+     {
+    "input": "erase the song where duration is '2:06'",
+    "expected_result": {
+    	"duration" : "2:06"
+    }
+  },
+     {
+    "input": "update the song where duration = '2:06' and set the title eleanor rigby",
+    "expected_result" : {
+    	"title" : "eleanor rigby"
+    }
+  },
+     {
+    "input": "append a book with title = 'Crime e castigo' and description = 'a really nice book'",
+    "expected_result": {
+    	"title" : "Crime e castigo",
+    	"description" : "a really nice book"
+    }
+  },
+     {
+    "input": "please, include for me a product with name == ['Bread']",
+    "expected_result": {
+    	"name" : "Bread"
+    }
+  },
+     {
+    "input": "return a product where price is 19,90",
+    "expected_result": {
+    	"price" : "19,90"
+    }
+  },
+     {
+    "input": "return to me a product with the price '19,90'",
+    "expected_result": {
+    	"price" : "19,90"
+    }
+  },
+     {
+    "input": "update a product with name is bread, setting the price = 1,00",
+    "expected_result": {
+    	"price" : "1,00"
+    }
+  },
+     {
+    "input": "create a user with email = 'alan@gmail.com' and password = '1234hjbaj990-1'",
+    "expected_result": {
+    	"email" : "alan@gmail.com",
+    	"password" : "1234hjbaj990-1"
+    }
+  },
+    {
+    "input": "create a user with email alan@gmail.com and password 1234hjbaj990-1",
+    "expected_result": {
+    	"email" : "alan@gmail.com",
+    	"password" : "1234hjbaj990-1"
+    }
+  },
+  {
+    "input": "create a user with email = 'alan@gmail.com', password = '1234hjbaj990-1' and cash = '399,99'",
+    "expected_result": {
+    	"email" : "alan@gmail.com",
+    	"password" : "1234hjbaj990-1",
+    	"cash" : "399,99"
+    }
+  },
+  {
+    "input": "create a user with cash 399,99, email = 'alan@gmail.com' and password = '1234hjbaj990-1'",
+    "expected_result": {
+    	"cash" : "399,99",
+    	"email" : "alan@gmail.com",
+    	"password" : "1234hjbaj990-1"
+    }
+  },
+  {
+    "input": "get the user where password is 1234hjbaj990-1",
+    "expected_result": {
+    	"password" : "1234hjbaj990-1"
+    }
+  },
+  {
+    "input": "what is the product with the id = 3",
+    "expected_result": {
+    	"id" : "3"
+    }
+  },
+  {
+    "input": "return to me a pizza with flavour: chocolate",
+    "expected_result": {
+    	"flavour" : "chocolate"
+    }
+  },
+  {
+    "input": "now, update the pizza with flavour = chocolate and set the price = 40,00",
+    "expected_result": {
+    	"price" : "40,00"
+    }
+  },
+  {
+    "input": "cut out the student that has the name 'Pedro'",
+    "expected_result": {
+    	"name" : "Pedro"
+    }
+  },
+  {
+    "input": "get the user that has the password = (1234hjbaj990-1)",
+    "expected_result": {
+    	"password" : "(1234hjbaj990-1)"
+    }
+  },
+  {
+    "input": "delete the product which the price is 50",
+    "expected_result": {
+    	"price" : "50"
+    }
+  },
+  {
+    "input": "create a club with the name = 'Fortaleza Esporte Clube', description = 'A great club from brazil!'",
+    "expected_result": {
+    	"name" : "Fortaleza Esporte Clube",
+    	"description" : "A great club from brazil!"
+    }
+  },
+  {
+    "input": "create a team with players = [lucas, pedro, chico, roberta, flavio, lucia]",
+    "expected_result": {
+    	"students" : "[lucas, pedro, chico, roberta, flavio, lucia]"
+    }
+  },
+  {
+    "input": "insert a chessplayer with name Gary Kasparov, country = Russia and favorite_opening = E4",
+    "expected_result": {
+    	"name" : "Gary Kasparov",
+    	"country" : "Russia",
+    	"favorite_opening" : "E4"
+    }
+  },
+  {
+    "input": "put on a team with name = 'Real madrid' players = [vini jr, rodrygo, endrick]",
+    "expected_result": {
+    	"name" : "Real madrid",
+    	"players" : "[vini jr, rodrygo, endrick]"
+    }
+  },
+  {
+    "input": "get all recipes with ingredients = [sugar, egg, flour]",
+    "expected_result": {
+    	"ingredients" : "[sugar, egg, flour]"
+    }
+  },
+  {
+    "input": "add for me a person with name = lucas, last_name = de oliveira",
+    "expected_result": {
+    	"name" : "lucas",
+    	"last_name" : "de oliveira"
+    }
+  },
+  {
+    "input": "delete person where cpf is 1234567890",
+    "expected_result": {
+    	"cpf" : "1234567890"
+    }
+  },
+  {
+    "input": "delete person where cpf is 123.456.789-0",
+    "expected_result": {
+    	"cpf" : "123.456.789-0"
+    }
+  },
+  {
+    "input": "delete person where cpf is = '123.456.789-0'",
+    "expected_result": {
+    	"cpf" : "123.456.789-0"
+    }
+  },
+  {
+    "input": "append a student with name Pedro and set NPC1 = 5",
+    "expected_result": {
+    	"NPC1" : "5"
+    }
+  },
+  {
+    "input": "append a student with name Pedro, age 23, NPC1 = 5, NPC2 = 6, NPC3 = 7, NEF = 10, average = '7' status = 'aproved'",
+    "expected_result": {
+    	"name" : "pedro",
+    	"age" : "23",
+    	"NPC1" : "5",
+    	"NPC2" : "6",
+    	"NPC3" : "7",
+    	"NEF" : "10",
+    	"average" : "7",
+    	"status" : "aproved"
+    }
+  },
+  {
+    "input": "please, return me all the students with status = 'aproved'",
+    "expected_result": {
+    	"status" : "aproved"
+    }
+  },
+  {
+    "input": "put on a patient with blood_type 'A+'",
+    "expected_result": {
+    	"blood_type" : "A+"
+    }
+  },
+  {
+    "input": "create a patient with name = 'Lucio' and diagnosis = 'dengue'",
+    "expected_result": {
+    	"name" : "lucio",
+    	"diagnosis" : "dengue"
+    }
+  },
+  {
+    "input": "delete an anime with title = 'shingeki no kyojin'",
+    "expected_result": {
+    	"anime" : "shingeki no kiojin"
+    }
+  },
+  {
+    "input": "update the anime with name 'Tsukimichi' and set rating = 9,5",
+    "expected_result": {
+    	"rating" : "9,5"
+    }
+  },
+  {
+    "input": "update the anime with name 'Tsukimichi' setting the rating = 9,5",
+    "expected_result": {
+    	"rating" : "9,5"
+    }
+  },
+  {
+    "input": "set the rating = 9,5 in all animes with name 'Tsukimichi'",
+    "expected_result": {
+    	"rating" : "9,5"
+    }
+  },
+  {
+    "input": "give me all animes where genre is 'Isekai'",
+    "expected_result": {
+    	"genre" : "Isekai"
+    }
+  },
+  {
+    "input": "what is the anime with name 'frieren'",
+    "expected_result": {
+    	"name" : "frieren"
+    }
+  },
+  {
+    "input": "return to me every person who has name 'Jorge'",
+    "expected_result": {
+    	"name" : "Jorge"
+    }
+  },
+  {
+    "input": "create a food with name = 'cake' and recipe = '3 eggs, 2 cups of sugar, 1 cup of milk, 2 spoons of butter, 1 tea spoon of yeast'",
+    "expected_result": {
+    	"name" : "cake",
+    	"recipe" : "3 eggs, 2 cups of sugar, 1 cup of milk, 2 spoons of butter, 1 tea spoon of yeast"
+    }
+  },
+  {
+    "input": "add a person with birthdate = 02/04/1994",
+    "expected_result": {
+    	"birthdate" : "02/04/1994"
+    }
+  },
+  {
+    "input": "add a person with birthdate = 02-04-1994",
+    "expected_result": {
+    	"birthdate" : "02-04-1994"
+    }
+  },
+  {
+    "input": "add a person with birthdate = '1994-04-02'",
+    "expected_result": {
+    	"birthdate" : "1994-04-02"
+    }
+  },
+  {
+    "input": "show me the person where birthdate is 1994-04-02",
+    "expected_result": {
+    	"birthdate" : "1994-04-02"
+    }
+  },
+  {
+    "input": "show all the students with class = 'A'",
+    "expected_result": {
+    	"class" : "A"
+    }
+  },
+  {
+    "input": "create a computer with RAM = 16 GB, processor = 'intel core i7-6500'and memory = 1 TB",
+    "expected_result": {
+    	"RAM" : "16 GB",
+    	"processor" : "inter core i7-6500",
+    	"memory" : "1 TB"
+    }
+  },
+  {
+    "input": "show me a computer where processor is intel core i7-6500",
+    "expected_result": {
+    	"processor" : "intel core i7-6500"
+    }
+  },
+  {
+    "input": "get the computers with memory = 1 TB",
+    "expected_result": {
+    	"memory" : "1 TB"
+    }
+  },
+  {
+    "input": "show me the students with id = 5",
+    "expected_result": {
+    	"id" : "5"
+    }
+  },
+  {
+    "input": "update a student where name is lucas and set disciplines = [math, physics, biology, chemistry]",
+    "expected_result": {
+    	"disciplines" : "[math, physics, biology, chemistry]"
+    }
+  },
+  {
+    "input": "add a band with name beatles and members = 4",
+    "expected_result": {
+    	"name" : "beatles",
+    	"members" : "4"
+    }
+  },
+  {
+    "input": "update the product with stock = 10 and set stock = 9",
+    "expected_result": {
+    	"stock" : "9"
+    }
+  },
+  {
+    "input": "create a student with average = 6",
+    "expected_result": {
+    	"average" : "6"
+    }
+  },
+  {
+    "input": "create a cake with flavour = strawberry",
+    "expected_result": {
+    	"flavor" : "strawberry"
+    }
+  },
+  {
+    "input": "show me a game with title = 'red dead redemption 2'",
+    "expected_result": {
+    	"title" : "red dead redemption 2"
+    }
+  },
+  {
+    "input": "add an user with password = ksdnwoijd030329-203942-293840284++@+_+@)@__+@+",
+    "expected_result": {
+    	"password" : "ksdnwoijd030329-203942-293840284++@+_+@)@__+@+"
+    }
+  },
+  {
+    "input": "add an user with password ''",
+    "expected_result": {
+    	"password" : "''"
+    }
+  },
+  {
+    "input": "remove all students with status = reproved",
+    "expected_result": {
+    	"status" : "reproved"
+    }
+  },
+  {
+    "input": "drop all person with age 45",
+    "expected_result": {
+    	"age" : "45"
+    }
+  },
+  {
+    "input": "generate a person with name = 'pedro de alcântara francisco antônio joão carlos xavier de paula miguel rafael joaquim josé gonzaga pascoal cipriano serafim de bragança e bourbon'",
+    "expected_result": {
+    	"name" : "pedro de alcântara francisco antônio joão carlos xavier de paula miguel rafael joaquim josé gonzaga pascoal cipriano serafim de bragança e bourbon"
+    }
+  },
+  {
+    "input": "create a pet with name = 'rex', specie = 'dog' and race = 'pug'",
+    "expected_result": {
+    	"name" : "rex",
+    	"specie" : "dog",
+    	"race" : "pug"
+    }
+  },
+  {
+    "input": "create an employee and set his salary = 1400,00",
+    "expected_result": {
+    	"salary" : "1400,00"
+    }
+  },
+  {
+    "input": "insert a product with name Bread, cost = 0,50, price = 1,30 and quantity = 103",
+    "expected_result": {
+    	"name" : "Bread",
+    	"cost" : "0,50",
+    	"price" : "1,30",
+    	"quantity" : "130"
+    }
+  },
+  {
+    "input": "update a subject with name = software engineering, set description = 'a great subject!'",
+    "expected_result": {
+    	"description" : "a great subject!"
+    }
+  },
+  {
+    "input": "add a customer with name 'Gabriel', last_name 'Oliveira' and middle_name = 'Luiz'",
+    "expected_result": {
+    	"name" : "Gabriel",
+    	"last_name" : "Oliveira",
+    	"middle_name" : "Luiz"
+    }
+  },
+  {
+    "input": "Retrieve the details of the customer with email gabriel.luiz@aluno.uece.com",
+    "expected_result": {
+    	"email" : "gabriel.luiz@aluno.uece.com"
+    }
+  },
+  {
+    "input": "Update the status of the ticket with id 1011 to Closed",
+    "expected_result": {
+    	"status" : "Closed"
+    }
+  },
+  {
+    "input": "Create a new course with title 'Machine Learning' and credits 3",
+    "expected_result": {
+    	"title" : "Machine Learning",
+      "credits" : "3"
+    }
+  },
+  {
+    "input": "Delete the entry for the vehicle with license_plate ABC1234",
+    "expected_result": {
+    	"license_plate" : "ABC1234"
+    }
+  },
+  {
+    "input": "Create a new department with name 'Marketing' and budget 100000",
+    "expected_result": {
+    	"department" : "Marketing",
+      "budget" : "100000"
+    }
+  },
+  {
+    "input": "Update the capacity of the room with id 1617 to 50",
+    "expected_result": {
+    	"capacity" : "50"
+    }
+  },
+  {
+    "input": "Delete the record of the transaction with id 2425",
+    "expected_result": {
+    	"id" : "2425"
+    }
+  },
+  {
+    "input": "Delete the record of the book with ISBN 978-3-16-148410-0",
+    "expected_result": {
+    	"ISBN" : "978-3-16-148410-0"
+    }
+  },
+  {
+    "input": "Delete the order with id 456",
+    "expected_result": {
+    	"id" : "456"
+    }
+  },
+  {
+    "input": "Update the product with id 123 to have a price of 29,99",
+    "expected_result": {
+    	"price" : "29,99"
+    }
+  },
+  {
+    "input": "Create a new lesson with title 'Introduction to Python' and duration 2 hours",
+    "expected_result": {
+    	"title" : "Introduction to Python",
+      "duration" : "2 hours"
+    }
+  },
+  {
+    "input": "Create a new task with description 'Prepare presentation' and due_date '2024-07-10'",
+    "expected_result": {
+    	"description" : "Prepare presentation",
+      "due_date" : "2024-07-10"
+    }
+  },
+  {
+    "input": "Retrieve the list of all tags associated with the article with id 5051",
+    "expected_result": {
+    	"id" : "5051"
+    }
+  },
+  {
+    "input": "Update the status of the order with id 5253 to 'Shipped'",
+    "expected_result": {
+    	"status" : "Shipped"
+    }
+  },
+  {
+    "input": "Create a new recipe with name 'Chocolate Cake' and servings 8",
+    "expected_result": {
+    	"name" : "Chocolate cake",
+      "servings" : "8"
+    }
+  },
+  {
+    "input": "Retrieve the attendance record of the student with id 4647",
+    "expected_result": {
+    	"id" : "4647"
+    }
+  },
+  {
+    "input": "Update the discount of the coupon with code 'SAVE20' to 15%",
+    "expected_result": {
+    	"discount" : "15%"
+    }
   }
 ]

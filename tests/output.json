@@ -1,46 +1,1897 @@
 [
     {
-        "input": "add student with name Victor and note 10",
-        "expected_query": "INSERT OR REPLACE INTO managedsys_web_customer(dome_created_at, dome_updated_at, name) values((datetime('now', 'localtime')), (datetime('now', 'localtime')), 'Gabriel')",
-        "expected_result": "Ok! I got it!\nWe are going to <b>ADD</b> a <b>Customer</b>.\nWith <b>name: <i>Gabriel</i></b>.\nSay <b>OK</b> to confirm or <b>CANCEL</b> to cancel this operation.",
-        "generated_query": "INSERT OR REPLACE INTO managedsys_web_student(dome_created_at, dome_updated_at, name, note) values((datetime('now', 'localtime')), (datetime('now', 'localtime')), 'Victor', '10')",
-        "generated_result": {
-            "name": "Victor",
-            "note": "10"
+        "input": "add student with name=anderson martins gomes, age=20",
+        "expected_result": {
+            "name": "Anderson Martins Gomes",
+            "age": "20"
         },
-        "treatment_flow": [
-            "pronoun_test",
-            "attribute: name",
-            "simplified_all_treatment",
-            "output: A simple one!\n\nThe answer is: \"Victor\"",
-            "pronoun_test",
-            "attribute: name",
-            "simplified_question_treatment",
-            "output: In this case, the \"name\" refers to the word \"Victor\".",
-            "key_test",
-            "attribute: name",
-            "invalid and_treatment",
-            "output: In the given sentence fragment, the 'name' is \"Victor\".",
-            "key_test",
-            "attribute: name",
-            "invalid_comma_treatment",
-            "output: The \"name\" in this sentence fragment is \"Victor\".",
-            "key_test",
-            "attribute: name",
-            "simplified_max_treatment",
-            "output: The value assigned to 'name' is: Victor",
-            "key_test",
-            "attribute: name",
-            "searching_treatment",
-            "searching_treatment",
-            "output:  Victor"
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson martins gomes",
+            "age": "20"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson martins gomes",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "20",
+                "model": "llama3",
+                "treatment": "string_and_treatment",
+                "treatment type": "string treatment"
+            }
         ],
-        "treatments": [
-            "simplified_all_treatment",
-            "simplified_question_treatment",
-            "invalid_and_treatment",
-            "invalid_comma_treatment",
-            "simplified_max_treatment"
-        ]
+        "valid": true
+    },
+    {
+        "input": "add subject with name=brazilian history, description=the history of brazil",
+        "expected_result": {
+            "name": "Brazilian History",
+            "description": "The history of Brazil"
+        },
+        "find_intent": "ADD",
+        "find_entity": "subject",
+        "generated_result": {
+            "name": "brazilian history",
+            "description": "the history of brazil"
+        },
+        "treatments_used": [
+            {
+                "result": "brazilian history",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "the history of brazil",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add teacher with name=paulo henrique, age=65, email=ph@uece.br",
+        "expected_result": {
+            "name": "Paulo Henrique",
+            "age": "65",
+            "email": "ph@uece.br"
+        },
+        "find_intent": "ADD",
+        "find_entity": "teacher",
+        "generated_result": {
+            "name": "paulo henrique",
+            "email": "ph@uece.br"
+        },
+        "treatments_used": [
+            {
+                "result": "paulo henrique",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "ph@uece.br",
+                "model": "llama3",
+                "treatment": "string_noise_treatment",
+                "treatment type": "string treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add subject with name=math, description=the best subject ever",
+        "expected_result": {
+            "name": "Math",
+            "description": "The best subject ever"
+        },
+        "find_intent": "ADD",
+        "find_entity": "subject",
+        "generated_result": {
+            "name": "math",
+            "description": "the best subject ever"
+        },
+        "treatments_used": [
+            {
+                "result": "math",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "the best subject ever",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add subject with name=math, description='the best subject ever!'",
+        "expected_result": {
+            "name": "Math",
+            "description": "The best subject ever!"
+        },
+        "find_intent": "ADD",
+        "find_entity": "subject",
+        "generated_result": {
+            "name": "math",
+            "description": "best subject"
+        },
+        "treatments_used": [
+            {
+                "result": "math",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "best subject",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add student name=anderson",
+        "expected_result": {
+            "name": "Anderson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a test with scope=module x, date=01/01/2022, timeout = 100, limit=10",
+        "expected_result": {
+            "scope": "Module X",
+            "date": "01/01/2022",
+            "timeout": "100",
+            "limit": "10"
+        },
+        "find_intent": "ADD",
+        "find_entity": "test",
+        "generated_result": {
+            "scope": "module x",
+            "timeout": "100",
+            "limit": "10"
+        },
+        "treatments_used": [
+            {
+                "result": "module x",
+                "model": "phi3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "100",
+                "model": "phi3",
+                "treatment": "None",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "10",
+                "model": "phi3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a test with scope=module y and number = 8",
+        "expected_result": {
+            "scope": "Module Y",
+            "number": "8"
+        },
+        "find_intent": "ADD",
+        "find_entity": "test",
+        "generated_result": {
+            "scope": "module y",
+            "number": "8"
+        },
+        "treatments_used": [
+            {
+                "result": "module y",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "8",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add student with name=anderson, age=199",
+        "expected_result": {
+            "name": "Anderson",
+            "age": "199"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson",
+            "age": "199"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "199",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add article with title=the title, author=the author",
+        "expected_result": {
+            "title": "The title",
+            "author": "The author"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "the title",
+            "author": "the author"
+        },
+        "treatments_used": [
+            {
+                "result": "the title",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "the author",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add article with author=anderson",
+        "expected_result": {
+            "author": "Anderson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "author": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "delete article when author=\"anderson\"",
+        "expected_result": {
+            "author": "Anderson"
+        },
+        "find_intent": "DELETE",
+        "find_entity": "article",
+        "generated_result": {
+            "author": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add article with title=the title, author=the author, abstract=the abstract, keywords=the keywords",
+        "expected_result": {
+            "title": "The title",
+            "author": "The author",
+            "abstract": "The abstract",
+            "keywords": "The keywords"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "the title",
+            "author": "the author",
+            "abstract": "the"
+        },
+        "treatments_used": [
+            {
+                "result": "the title",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "the author",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "the",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "update article with id=1, setting the first author as \"paulo maia\"",
+        "expected_result": {
+            "first_author": "Paulo Maia"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": {
+            "first_author": "paulo maia"
+        },
+        "treatments_used": [
+            {
+                "result": "paulo maia",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "for the students with name='anderson', update the name to 'anderson martins'",
+        "expected_result": {
+            "name": "Anderson Martins"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "student",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "please, change the student with name='anderson', updating the age to 30",
+        "expected_result": {
+            "age": "30"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "student",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the age to 42, for students with name='anderson'",
+        "expected_result": {
+            "age": "42"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "student",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the articles with id=1, setting the title='new title'",
+        "expected_result": {
+            "title": "new title"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "new title"
+        },
+        "treatments_used": [
+            {
+                "result": "new title",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add article with title='title 2', author='rodrigo'",
+        "expected_result": {
+            "title": "title 2",
+            "author": "Rodrigo"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "title 2",
+            "author": "rodrigo"
+        },
+        "treatments_used": [
+            {
+                "result": "title 2",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "rodrigo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "update the articles with id=1, setting the co-author='layza'",
+        "expected_result": {
+            "co_author": "Layza"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": {
+            "co_author": "layza"
+        },
+        "treatments_used": [
+            {
+                "result": "layza",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "delete the article with id=1",
+        "expected_result": {
+            "id": "1"
+        },
+        "find_intent": "DELETE",
+        "find_entity": "article",
+        "generated_result": {
+            "id": "1"
+        },
+        "treatments_used": [
+            {
+                "result": "1",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a student with age=45",
+        "expected_result": {
+            "age": "45"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "age": "45"
+        },
+        "treatments_used": [
+            {
+                "result": "45",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "include company with name=acme, address=150 coconut street",
+        "expected_result": {
+            "name": "ACME",
+            "address": "150 Coconut Street"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "acme",
+            "address": "150 coconut street"
+        },
+        "treatments_used": [
+            {
+                "result": "acme",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "150 coconut street",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add another company with name=caju enterprises, owner=anderson gomes and address=200 cumbuco street",
+        "expected_result": {
+            "name": "Caju Enterprises",
+            "owner": "Anderson Gomes",
+            "address": "200 Cumbuco Street"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "caju enterprises",
+            "owner": "anderson gomes",
+            "address": "200 cumbuco street"
+        },
+        "treatments_used": [
+            {
+                "result": "caju enterprises",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "anderson gomes",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "200 cumbuco street",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a new company with name=american beauty and owner=kevin spacey",
+        "expected_result": {
+            "name": "American Beauty",
+            "owner": "Kevin Spacey"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "american beauty",
+            "owner": "kevin spacey"
+        },
+        "treatments_used": [
+            {
+                "result": "american beauty",
+                "model": "llama3",
+                "treatment": "string_and_treatment",
+                "treatment type": "string treatment"
+            },
+            {
+                "result": "kevin spacey",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a new company with name=american beauty and owner=janjo chiquim",
+        "expected_result": {
+            "name": "American Beauty",
+            "owner": "janjo chiquim"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "american beauty",
+            "owner": "janjo chiquim"
+        },
+        "treatments_used": [
+            {
+                "result": "american beauty",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "janjo chiquim",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a new company with name=american beauty and owner=roger rommel",
+        "expected_result": {
+            "name": "American Beauty",
+            "owner": "Roger Rommel"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "american beauty",
+            "owner": "roger rommel"
+        },
+        "treatments_used": [
+            {
+                "result": "american beauty",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "roger rommel",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add company with name=roger arrombado",
+        "expected_result": {
+            "name": "Roger Arrombado"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "roger arrombado"
+        },
+        "treatments_used": [
+            {
+                "result": "roger arrombado",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "include a company with name=mimoso construcoes",
+        "expected_result": {
+            "name": "Mimoso Construcoes"
+        },
+        "find_intent": "ADD",
+        "find_entity": "company",
+        "generated_result": {
+            "name": "mimoso construcoes"
+        },
+        "treatments_used": [
+            {
+                "result": "mimoso construcoes",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "delete students with id <= 4",
+        "expected_result": {
+            "id": "4"
+        },
+        "find_intent": "DELETE",
+        "find_entity": "student",
+        "generated_result": {
+            "id": "4"
+        },
+        "treatments_used": [
+            {
+                "result": "4",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add film \"batman (2022)\" with genre=action",
+        "expected_result": {
+            "genre": "action"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "film": "batman"
+        },
+        "treatments_used": [
+            {
+                "result": "batman",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name \"batman (2022)\" and genre=action",
+        "expected_result": {
+            "name": "Batman (2022)",
+            "genre": "action"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "batman",
+            "genre": "a"
+        },
+        "treatments_used": [
+            {
+                "result": "batman",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "a",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a film with name \"avatar (2022)\" and genre=action, and another film with name=crep\u00fasculo and genre \"drama\"",
+        "expected_result": {
+            "name": "Avatar (2022)",
+            "genre": "action"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "name \"avatar",
+            "genre": "action",
+            "film": "avatar"
+        },
+        "treatments_used": [
+            {
+                "result": "name \"avatar",
+                "model": "llama3",
+                "treatment": "None",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "action",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "avatar",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a film with name \"avatar (2022)\" and genre=action",
+        "expected_result": {
+            "name": "Avatar (2022)",
+            "genre": "action"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "2022)",
+            "genre": "action"
+        },
+        "treatments_used": [
+            {
+                "result": "2022)",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "action",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "now add film with name=crep\u00fasculo and genre \"drama\"",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "crep\u00fasculo",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "crep\u00fasculo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name=crep\u00fasculo and genre \"drama\"",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "crep\u00fasculo",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "crep\u00fasculo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name='crep\u00fasculo' and genre \"drama\"",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "crep\u00fasculo",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "crep\u00fasculo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film film with name='crep\u00fasculo' and genre=\"drama\"",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "film": "and",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "and",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name='crep\u00fasculo' and genre=\"drama\"",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "crep\u00fasculo",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "crep\u00fasculo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name \"crep\u00fasculo\" and genre=drama",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "film": "crepusculo"
+        },
+        "treatments_used": [
+            {
+                "result": "crepusculo",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with name \"crepusculo\" and genre=drama",
+        "expected_result": {
+            "name": "Crepusculo",
+            "genre": "Drama"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "crepusculo",
+            "genre": "drama"
+        },
+        "treatments_used": [
+            {
+                "result": "crepusculo",
+                "model": "llama3",
+                "treatment": "",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "drama",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "show me film where genre = action",
+        "expected_result": {
+            "genre": "action"
+        },
+        "find_intent": "READ",
+        "find_entity": "film",
+        "generated_result": {
+            "genre": "action"
+        },
+        "treatments_used": [
+            {
+                "result": "action",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a student with name=anderson",
+        "expected_result": {
+            "name": "anderson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a former teacher with name = anderson",
+        "expected_result": {
+            "name": "Anderson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "teacher",
+        "generated_result": {
+            "name": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a former student with name = roger",
+        "expected_result": {
+            "name": "Roger"
+        },
+        "find_intent": "ADD",
+        "find_entity": "former_student",
+        "generated_result": {
+            "name": "roger"
+        },
+        "treatments_used": [
+            {
+                "result": "roger",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a movie with name=final fantasy",
+        "expected_result": {
+            "name": "Final Fantasy"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "name": "final fantasy"
+        },
+        "treatments_used": [
+            {
+                "result": "final fantasy",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "get filmes where id=3",
+        "expected_result": {
+            "id": "3"
+        },
+        "find_intent": "READ",
+        "find_entity": "film",
+        "generated_result": {
+            "id": "3"
+        },
+        "treatments_used": [
+            {
+                "result": "3",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "update film with id=6, setting year to 2023",
+        "expected_result": {
+            "year": "2023"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "film",
+        "generated_result": {
+            "year": "to 2023"
+        },
+        "treatments_used": [
+            {
+                "result": "to 2023",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add film with title=et",
+        "expected_result": {
+            "title": "ET"
+        },
+        "find_intent": "ADD",
+        "find_entity": "film",
+        "generated_result": {
+            "title": "et"
+        },
+        "treatments_used": [
+            {
+                "result": "et",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add student with name='anderson'",
+        "expected_result": {
+            "name": "anderson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a student with age=43",
+        "expected_result": {
+            "age": "43"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "age": "43"
+        },
+        "treatments_used": [
+            {
+                "result": "43",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "get student with name=julio",
+        "expected_result": {
+            "name": "Julio"
+        },
+        "find_intent": "READ",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "julio"
+        },
+        "treatments_used": [
+            {
+                "result": "julio",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "get student with name=anderson",
+        "expected_result": {
+            "name": "Anderson"
+        },
+        "find_intent": "READ",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "anderson"
+        },
+        "treatments_used": [
+            {
+                "result": "anderson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add student with name=julio",
+        "expected_result": {
+            "name": "Julio"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "julio"
+        },
+        "treatments_used": [
+            {
+                "result": "julio",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add course with name='computer engineering'",
+        "expected_result": {
+            "name": "Computer Engineering"
+        },
+        "find_intent": "ADD",
+        "find_entity": "course",
+        "generated_result": {
+            "name": "computer engineering"
+        },
+        "treatments_used": [
+            {
+                "result": "computer engineering",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "get the class with name=student",
+        "expected_result": {
+            "class": "student"
+        },
+        "find_intent": "READ",
+        "find_entity": "class",
+        "generated_result": {
+            "name": "student"
+        },
+        "treatments_used": [
+            {
+                "result": "student",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add student with name=abcd",
+        "expected_result": {
+            "name": "abcd"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "abcd"
+        },
+        "treatments_used": [
+            {
+                "result": "abcd",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add student with name=abcdef",
+        "expected_result": {
+            "name": "abcdef"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "abcdef"
+        },
+        "treatments_used": [
+            {
+                "result": "abcdef",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add student with name='maria', phone=123456",
+        "expected_result": {
+            "name": "maria",
+            "phone": "123456"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "maria",
+            "phone": "123456"
+        },
+        "treatments_used": [
+            {
+                "result": "maria",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "123456",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "update student age=40 when id= 4",
+        "expected_result": {
+            "age": "40"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "student",
+        "generated_result": {
+            "age": "40"
+        },
+        "treatments_used": [
+            {
+                "result": "40",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add an article with title='dome: a reference architecture, publish year = 2023",
+        "expected_result": {
+            "title": "DoME: A Reference Architecture",
+            "publish_year": "2023"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "'dome: a reference architecture, publish year = 2023"
+        },
+        "treatments_used": [
+            {
+                "result": "'dome: a reference architecture, publish year = 2023",
+                "model": "llama3",
+                "treatment": "string_and_treatment",
+                "treatment type": "string treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add an article with title='dome: a reference architecture', and the publish year = 2023",
+        "expected_result": {
+            "title": "DoME: A Reference Architecture",
+            "publish_year": "2023"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "a reference architecture",
+            "publish": "2023"
+        },
+        "treatments_used": [
+            {
+                "result": "a reference architecture",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "2023",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add an article with title='dome: a reference architecture', and year = 2023",
+        "expected_result": {
+            "title": "DoME: A Reference Architecture",
+            "year": "2023"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "'dome: a reference architecture',",
+            "year": "2023"
+        },
+        "treatments_used": [
+            {
+                "result": "'dome: a reference architecture',",
+                "model": "llama3",
+                "treatment": "string_and_treatment",
+                "treatment type": "string treatment"
+            },
+            {
+                "result": "2023",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add article with title='another article', and author='charles bronson'",
+        "expected_result": {
+            "title": "Another Article",
+            "author": "Charles Bronson"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "another article",
+            "author": "charles bronson"
+        },
+        "treatments_used": [
+            {
+                "result": "another article",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "charles bronson",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "update the article with id=1, setting the author='madona'",
+        "expected_result": {
+            "author": "Madona"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update article with id = 2, but now i want to set title as 'experimental demonstration of shor's quantum factoring algorithm using qubits'",
+        "expected_result": {
+            "title": "Experimental demonstration of Shor's quantum factoring algorithm using qubits"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "as",
+            "experimental_demonstration": "of",
+            "article": "shor"
+        },
+        "treatments_used": [
+            {
+                "result": "as",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "of",
+                "model": "llama3",
+                "treatment": "string_noise_treatment",
+                "treatment type": "string treatment"
+            },
+            {
+                "result": "shor",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the article with id 3, but now i want to set its year=2022",
+        "expected_result": {
+            "year": "2022"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a new article with title='futuro deletado",
+        "expected_result": {
+            "title": "futuro deletado"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "deletado"
+        },
+        "treatments_used": [
+            {
+                "result": "deletado",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "delete all articles with title='futuro deletado'",
+        "expected_result": {
+            "title": "futuro deletado"
+        },
+        "find_intent": "DELETE",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "futuro deletado"
+        },
+        "treatments_used": [
+            {
+                "result": "futuro deletado",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add a blockade with the localization \u2019222 road, km 13\u2019, and type='partial blockade'",
+        "expected_result": {
+            "localization": "222 road, km 13",
+            "type": "partial blockade"
+        },
+        "find_intent": "ADD",
+        "find_entity": "blockade",
+        "generated_result": {
+            "localization": "km 13\u2019",
+            "type": "partial blockade"
+        },
+        "treatments_used": [
+            {
+                "result": "km 13\u2019",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "partial blockade",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a blockade with the localization \u2019116 road, km 105\u2019, and type='partial blockade'",
+        "expected_result": {
+            "localization": "116 road, km 105",
+            "type": "partial blockade"
+        },
+        "find_intent": "ADD",
+        "find_entity": "blockade",
+        "generated_result": {
+            "localization": "116 road, km 105\u2019,",
+            "type": "partial blockade"
+        },
+        "treatments_used": [
+            {
+                "result": "116 road, km 105\u2019,",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            },
+            {
+                "result": "partial blockade",
+                "model": "llama3",
+                "treatment": "string_and_treatment",
+                "treatment type": "string treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "add a student with name='mariana alves'",
+        "expected_result": {
+            "name": "Mariana Alves"
+        },
+        "find_intent": "ADD",
+        "find_entity": "student",
+        "generated_result": {
+            "name": "mariana alves"
+        },
+        "treatments_used": [
+            {
+                "result": "mariana alves",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "add an article with title='cautious adaptation of defiant components'",
+        "expected_result": {
+            "title": "Cautious Adaptation of Defiant Components"
+        },
+        "find_intent": "ADD",
+        "find_entity": "article",
+        "generated_result": {
+            "title": "defiant",
+            "defiant_components": ""
+        },
+        "treatments_used": [
+            {
+                "result": "defiant",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the article with id=6, setting the year=2019",
+        "expected_result": {
+            "year": "2019"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "article",
+        "generated_result": {
+            "year": "2019"
+        },
+        "treatments_used": [
+            {
+                "result": "2019",
+                "model": "llama3",
+                "treatment": "where_clause_search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "delete all articles with year=2019",
+        "expected_result": {
+            "year": "2019"
+        },
+        "find_intent": "DELETE",
+        "find_entity": "article",
+        "generated_result": {
+            "year": "2019"
+        },
+        "treatments_used": [
+            {
+                "result": "2019",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "please, add a pokemon with name=\"pikachu\"",
+        "expected_result": {
+            "name": "Pikachu"
+        },
+        "find_intent": "ADD",
+        "find_entity": "pokemon",
+        "generated_result": {
+            "name": "pikachu"
+        },
+        "treatments_used": [
+            {
+                "result": "pikachu",
+                "model": "llama3",
+                "treatment": "search_treatment",
+                "treatment type": "LLM answer treatment"
+            }
+        ],
+        "valid": true
+    },
+    {
+        "input": "update the pokemon with name \"pikachu\" and set its type=\"electric\"",
+        "expected_result": {
+            "type": "Electric"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": {
+            "pokemon": "pikachu"
+        },
+        "treatments_used": [
+            {
+                "result": "pikachu",
+                "model": "llama3",
+                "treatment": "string_noise_treatment",
+                "treatment type": "string treatment"
+            }
+        ],
+        "valid": false
+    },
+    {
+        "input": "update a pokemon with name=\"pikachu\" by adding \"evolve_to\"=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update a pokemon with name=\"pikachu\" by setting \"evolve_to\"=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the pokemon with name=\"pikachu\", setting \"evolve_to\"=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update a pokemon with name=\"pikachu\" by setting evolve_to=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the pokemon with name=\"pikachu\", setting evolve_to=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the pokemon with name=\"pikachu\", setting evolveto=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
+    },
+    {
+        "input": "update the pokemon with name \"pikachu\", setting evolve_to=\"raichu\"",
+        "expected_result": {
+            "evolve_to": "Raichu"
+        },
+        "find_intent": "UPDATE",
+        "find_entity": "pokemon",
+        "generated_result": "",
+        "treatments_used": [
+            "None"
+        ],
+        "valid": false
     }
 ]

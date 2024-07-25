@@ -8,11 +8,10 @@ from util import date_util
 
 
 class DomainEngine:
-    def __init__(self, AC, Test):
+    def __init__(self, AC):
         self.__AC = AC  # Autonomous Controller Object
         self.__TDB = None  # Transaction Database Connection
         self.__entities_map = {}  # map of entities
-        self.__Test = Test
         self.init_entities()
 
     def init_entities(self):
@@ -106,7 +105,6 @@ class DomainEngine:
 
         sql_cmd = sql_cmd[:-2]  # removing the last comma
         sql_cmd += ")"
-        self.__Test.generated_query = sql_cmd
         self.__executeSqlCmd(sql_cmd)
 
     def update(self, entity, attributes, where_clause):
@@ -146,7 +144,6 @@ class DomainEngine:
                 else:
                     sql_cmd += "LOWER(" + k + ") = LOWER('" + where_clause[k] + "') AND "
             sql_cmd = sql_cmd[:-4]  # removing the last AND
-        self.__Test.generated_query = sql_cmd
         return self.__executeSqlCmd(sql_cmd)
 
     def read(self, entity, attributes):
@@ -184,7 +181,6 @@ class DomainEngine:
                 # else
                 results = pd.DataFrame.from_records(data=data, columns=cols, index=['id'])
                 results.drop(['dome_created_at', 'dome_updated_at'], axis=1, inplace=True)
-                self.__Test.generated_query = sql_cmd
                 return results
             else:
                 return None  # there is no that attribute in entity
@@ -202,7 +198,6 @@ class DomainEngine:
         # else
         results = pd.DataFrame.from_records(data=data, columns=cols, index=['id'])
         results.drop(['dome_created_at', 'dome_updated_at'], axis=1, inplace=True)
-        self.__Test.generated_query = sql_cmd
         return results
 
     def delete(self, entity, attributes):
@@ -210,5 +205,4 @@ class DomainEngine:
         for k in attributes.keys():
             sql_cmd += "LOWER(" + k + ") = LOWER('" + attributes[k] + "') AND "
         sql_cmd = sql_cmd[:-4]  # removing the last AND
-        self.__Test.generated_query = sql_cmd
         return self.__executeSqlCmd(sql_cmd)
