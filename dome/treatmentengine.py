@@ -16,6 +16,11 @@ class TreatmentEngine:
 
     def treat(self, value, key='', request='get_attribute', processed_attributes=''):
 
+        if config.SIMILARITY_FILTER:
+            print('filters')
+            print(request)
+            value = self.__TM.manage_filters(key, value, request)
+
         if not config.TREATMENT_MODE:
             print("no treatments")
             return value
@@ -75,13 +80,15 @@ class TreatmentManager:
 
     def manage_attributes(self, key, value, request, processed_attributes):
         
-        value = self.__RF.search_answer(key, value) # UPDATE SUGESTION: see if it is a treatment
-        self.__Test.add_treatment("search_treatment")
-
         valid = self.__RC.check(key, value, request, processed_attributes)
 
         if valid:
             print("retornou logo")
+            return value
+        
+        valid = self.__RC.check(key, value, request, processed_attributes)
+
+        if valid:
             return value
 
         # first we will try to change the prompt to treat
@@ -106,10 +113,10 @@ class TreatmentManager:
         return value
 
     def manage_intent(self, value):
-        return self.__RF.search_intent(value)
+        return self.__RF.intent_filter(value)
 
     def manage_entity(self, value):
-        return self.__RF.search_entity(value)
+        return self.__RF.entity_filter(value)
     
     def manage_where_clause(self, value, request, processed_attributes):
         valid = self.__RC.check('', value, request, processed_attributes)
@@ -117,7 +124,7 @@ class TreatmentManager:
         if valid:
             return value 
         
-        new_value = self.__RF.search_where_clause(value)
+        new_value = self.__RF.where_clause_filter(value)
         if self.__RC.check('', new_value, request, processed_attributes):
             print("vai retornar certim ebaaa")
             return new_value
@@ -128,9 +135,6 @@ class TreatmentManager:
         
         return value
         
-
-
-    
     def manage_prompt(self, key, request, processed_attributes):
         if request == 'get_attribute':
             prompts = ["simplified_all", "simplified_question", "invalid_and", "invalid_comma", "simplified_max"]
@@ -141,12 +145,24 @@ class TreatmentManager:
             print(key)
             new_value = self.__RF.prompt_treatment(key, prompt)
             if request == 'get_attribute':
-                new_value = self.__RF.search_answer(key, new_value)
+                new_value = self.__RF.similarity_filter(key, new_value)
             if self.__RC.check(key, new_value, request, processed_attributes):
                 print("vai retornar 1")
                 print(new_value)
                 return new_value
         return ""
+    
+    def manage_filters(self, key, value, request):
+        match(request):
+            case 'get_attribute':
+                 print('similarity treatments')
+                 self.__Test.add_treatment("similarity_filter")
+                 return self.__RF.similarity_filter(key, value)
+            case 'get_where_clause':
+                self.__Test.add_treatment("where_clause_filter")
+                return self.__RF.where_clause_filter(value)
+            case _:
+                return value
 
     def response_validate(self, request, response):
 
@@ -389,7 +405,7 @@ class ResponseFixer:
             return match
         return value
     
-    def search_intent(self, value):
+    def intent_filter(self, value):
         options = [' Yes ', ' No ', ' CREATE ', ' READ ', ' UPDATE ', ' DELETE ']
         for option in options:
             if option in value:
@@ -401,7 +417,7 @@ class ResponseFixer:
                 return re.sub(r'^\s+|\s+$', '', option)
         return ''
     
-    def search_entity(self, value):
+    def entity_filter(self, value):
         entity_candidates = []
         for token in self.tokens:
             if token['entity'] == 'NOUN' or token['entity'] == 'PROPN':
@@ -414,7 +430,7 @@ class ResponseFixer:
         else:
             return ''
 
-    def search_where_clause(self, value):
+    def where_clause_filter(self, value):
         keywords = ['when', 'where', 'which', 'whose', 'with']
         fragment_short = ''
         index = -1
@@ -457,12 +473,11 @@ class ResponseFixer:
             print('vai retornar isso aqui')
             response = possible_answer[0] + ' = ' + possible_answer[1]
         if response:
-            self.__Test.add_treatment("where_clause_search_treatment")
             return self.where_clause_normalize(response)
         return value
 
 
-    def search_answer(self, key, value):
+    def similarity_filter(self, key, value):
         print("will search")
         value_list = value.split(' ')
         value_list = list(filter(lambda x: x != '', value_list))
@@ -506,6 +521,5 @@ class ResponseFixer:
             answer = new_answer
         print("search answer")
         print(answer)
-        self.__Test.add_treatment("search_treatment")
         return re.sub(r'^\s+|\s+$', '', answer)
     

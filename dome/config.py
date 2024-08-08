@@ -168,8 +168,9 @@ MANAGED_SYSTEM_WEBAPP_BASE_URL += '/admin/managedsys_web'
 
 TREATMENT_MODE = True
 
+SIMILARITY_FILTER = True
+
 TEST_MODE = False
-TEST_QUANTITY = 10
 
 #MODEL_SERVICE = 'huggingface'
 MODEL_SERVICE = 'ollama'
@@ -180,7 +181,8 @@ MODELS_API_URLS = [
             'https://api-inference.huggingface.co/models/google/flan-t5-base'
         ],
         [
-            'llama3',
+            #'llama3',
+            'mistral',
             'phi3'
         ]
     ]

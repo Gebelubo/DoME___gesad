@@ -35,7 +35,10 @@ class Test:
     def add_treatment_flow(self):
         print("add treatment flow")
         print(self.treatment_used)
+        if not self.treatment_used:
+            return
         self.treatment_flow.append(self.treatment_used)
+        self.treatment_used=''
 
     def add_treatment(self, treatment):
         self.treatment_used = treatment
@@ -59,8 +62,8 @@ class Test:
             return 'LLM answer treatment'
 
     def insert_data(self, index):
-        print("insert data")
-        new_output = {'input' : self.input[index]['input'], 
+        new_output = {'id' : index+1,
+                      'input' : self.input[index]['input'], 
                       'expected_result' : self.input[index]['expected_result'], 
                       'find_intent' : self.find_intent,
                       'find_entity' : self.find_entity,
@@ -70,15 +73,29 @@ class Test:
         new_output['treatments_used'] = []
         if self.generated_response:
             for list_index, keys in enumerate(self.generated_response.keys()):
+                if list_index >= len(self.treatment_flow)+1:
+                    print('breko')
+                    break
                 if not self.generated_response[keys]: 
                     continue
-                if TREATMENT_MODE:
-                    treatment_json = {}
-                    treatment_json['result'] = self.generated_response[keys]
-                    treatment_json['model'] = self.model
-                    treatment_json['treatment'] = self.treatment_flow[list_index]
-                    treatment_json['treatment type'] = self.add_treatment_type(self.treatment_flow[list_index])
-                    new_output['treatments_used'].append(treatment_json)
+                print('keys')
+                print(list_index)
+                print(keys)
+                print("treatment_flow")
+                print(self.treatment_flow)
+                if self.treatment_flow:
+                    if TREATMENT_MODE and list_index <= len(self.treatment_flow)-1:
+                        print("treatment_flow")
+                        print(self.treatment_flow)
+                        print(self.treatment_flow[list_index])
+                        treatment_json = {}
+                        treatment_json[keys] = self.generated_response[keys]
+                        treatment_json['model'] = self.model
+                        treatment_json['treatment'] = self.treatment_flow[list_index]
+                        treatment_json['treatment type'] = self.add_treatment_type(self.treatment_flow[list_index])
+                        new_output['treatments_used'].append(treatment_json)
+                    else:
+                        new_output['treatments_used'].append("None")
         else:
             new_output['treatments_used'].append("None")
 

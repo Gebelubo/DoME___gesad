@@ -167,7 +167,6 @@ class AutonomousController:
         try:
             if config.TEST_MODE:
                 index = 0
-                test_quantity = config.TEST_QUANTITY
                 print('tamanho:')
                 print(len(self.__Test.previous_output))
                 print('tamanho input')
@@ -179,7 +178,6 @@ class AutonomousController:
                         continue
                     print("ESCREVEU")
                     self.__Test.write()
-                    test_quantity=test_quantity+index
                     print("index")
                     print(index)
                     print(input)

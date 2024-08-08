@@ -164,6 +164,7 @@ class AIEngine(DAO):
             }
             api_url = "http://localhost:11434/api/generate"
             __response = requests.post(api_url, headers=authorization, json=payload)
+            print(__response.json())
             answer = __response.json()['response']
         return answer
 
@@ -634,7 +635,7 @@ class AIEngine(DAO):
                             if analytic_opr['operation'] is None:
                                 analytic_opr['entity'] = self.entity_class
                             j += 1
-                        elif self.tokens[j]['word'] == 'dome_created_at' or self.tokens[j]['word'] in DATE_KEYWORDS:
+                        elif self.tokens[j]['word'] == 'dome_created_at':
 
                             # replace the date keyword in the mensage to the new attribute key name (dome_created_at)
                             self.user_msg = re.sub(r'\b' + re.escape(self.tokens[j]['word']) + r'\b', 'dome_created_at',
