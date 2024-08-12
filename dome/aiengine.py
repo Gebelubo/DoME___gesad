@@ -164,7 +164,6 @@ class AIEngine(DAO):
             }
             api_url = "http://localhost:11434/api/generate"
             __response = requests.post(api_url, headers=authorization, json=payload)
-            print(__response.json())
             answer = __response.json()['response']
         return answer
 
@@ -463,8 +462,6 @@ class AIEngine(DAO):
 
             cached_entity_class = self.__AIE.get_entity_name_by_alternative(entity_class_candidate)
             if cached_entity_class:
-                print("entity")
-                print(cached_entity_class)
                 return cached_entity_class
             # else
             # add the entity class to the cache
@@ -548,10 +545,7 @@ class AIEngine(DAO):
 
                 where_clause = self.question_answerer(question, context, options)
                 where_clause = treater_obj.treat(where_clause['answer'], request='get_where_clause', processed_attributes=processed_attributes)
-                print("where clause")
-                print(where_clause)
                 where_clause_idx_start = self.user_msg.find(where_clause)
-                print(where_clause_idx_start)
 
                 if where_clause_idx_start > -1:
                     where_clause_idx_end = where_clause_idx_start + len(where_clause)
@@ -674,13 +668,8 @@ class AIEngine(DAO):
                     # get the end index in the original msg
 
                     # treatment here
-                    print("first answer")
-                    print(response)
                     response['answer'] = treater_obj.treat(response['answer'], attribute_name, 'get_attribute', processed_attributes)
-                    print("answer")
-                    print(response)
                     att_value_idx_end = self.user_msg.find(response['answer'], token_j['end'])
-                    print(att_value_idx_end)
                     if att_value_idx_end == -1:
                         # trying to find the attribute value anywhere
                         att_value_idx_end = self.user_msg.find(response['answer'], 0)
@@ -697,7 +686,6 @@ class AIEngine(DAO):
 
                     # add the pair of attribute name and attribute value in the result list
                     attribute_value = response['answer']
-                    print(attribute_value)
                     # clean the attribute value
                     if len(attribute_value) > 0:  # prevent errors
                         if not attribute_value[0].isalnum():  # see test.test_add_5()
@@ -711,12 +699,8 @@ class AIEngine(DAO):
 
                     # add the attribute pair to the correspondent map
                     if idx_in_where_clause(att_value_idx_end):
-                        print("where clause")
                         where_clause_attributes[attribute_name] = attribute_value
                     else:
-                        print("aq foi")
-                        print("processed atrributes")
-                        print(processed_attributes)
                         processed_attributes[attribute_name] = attribute_value
 
                     if att_value_idx_end > -1:
@@ -732,7 +716,6 @@ class AIEngine(DAO):
 
             if self.intent == Intent.UPDATE and (not processed_attributes or not where_clause_attributes):
                 # inconsistency in the answer, return none
-                print("1")
                 return None, None
 
             # print("The answer:")
@@ -741,9 +724,6 @@ class AIEngine(DAO):
             #     print("is acceptable")
             # else:
             #     print("is not acceptable")
-            print("2")
-            print("gerou:")
-            print(processed_attributes)
             self.__Test.generated_response = processed_attributes
             return processed_attributes, where_clause_attributes
 

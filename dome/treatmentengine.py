@@ -17,22 +17,15 @@ class TreatmentEngine:
     def treat(self, value, key='', request='get_attribute', processed_attributes=''):
 
         if config.SIMILARITY_FILTER:
-            print('filters')
-            print(request)
             value = self.__TM.manage_filters(key, value, request)
 
         if not config.TREATMENT_MODE:
-            print("no treatments")
             return value
 
-        print("value")
-        print(value)
         new_response = re.sub(r'^\s+|\s+$', '', value)
         new_response = new_response.replace('=', '').replace("'", '').replace('"', '').replace('\\', '').replace('/','').replace('`', '').replace('´', '').replace('\n', ' ')
 
         new_response = self.__TM.manage(key, new_response, request, processed_attributes)
-        print("new response")
-        print(new_response)
         if not self.response_validate(request, {key: new_response}):
             self.change_model()
             new_response = self.__TM.manage(key, value, request, processed_attributes)
@@ -83,7 +76,6 @@ class TreatmentManager:
         valid = self.__RC.check(key, value, request, processed_attributes)
 
         if valid:
-            print("retornou logo")
             return value
         
         valid = self.__RC.check(key, value, request, processed_attributes)
@@ -94,7 +86,6 @@ class TreatmentManager:
         # first we will try to change the prompt to treat
         new_value = self.manage_prompt(key, request, processed_attributes)
         if new_value is not "":
-            print("vai retornar 2")
             return new_value
         
         new_value = self.__RF.searching_treatment(key, value)
@@ -126,7 +117,6 @@ class TreatmentManager:
         
         new_value = self.__RF.where_clause_filter(value)
         if self.__RC.check('', new_value, request, processed_attributes):
-            print("vai retornar certim ebaaa")
             return new_value
         
         new_value = self.manage_prompt('', request, processed_attributes)
@@ -141,21 +131,16 @@ class TreatmentManager:
         elif request == 'get_where_clause':
             prompts = ['where_clause_simplified']
         for prompt in prompts:
-            print(prompt)
-            print(key)
             new_value = self.__RF.prompt_treatment(key, prompt)
             if request == 'get_attribute':
                 new_value = self.__RF.similarity_filter(key, new_value)
             if self.__RC.check(key, new_value, request, processed_attributes):
-                print("vai retornar 1")
-                print(new_value)
                 return new_value
         return ""
     
     def manage_filters(self, key, value, request):
         match(request):
             case 'get_attribute':
-                 print('similarity treatments')
                  self.__Test.add_treatment("similarity_filter")
                  return self.__RF.similarity_filter(key, value)
             case 'get_where_clause':
@@ -194,13 +179,11 @@ class ResponseChecker:
             methods = [self.len_test, self.where_clause_format_test]
         for method in methods: # UPDATE SUGESTION: run all checks and fix only the ones that breaks
             if method(key, value, processed_attributes) == False:  # args[0], args[1], args[2]
-                print(str(method))
                 return False
         return True
     
     def len_test(self, *args):
         if len(args[1])<=0:
-            print("ta empty")
             return False
         return True
 
@@ -348,31 +331,23 @@ class ResponseFixer:
             fragment_short = ''
 
         response = self.__TE.question_answerer_remote(question, context)
-        print(response)
         if response['answer'] is not None and response['answer'] != 'None':
             return re.sub(r'^\s+|\s+$', '', response['answer'])
         else:
             return re.sub(r'^\s+|\s+$', '', fragment_short)
 
     def searching_treatment(self, key, value):
-        print("searching")
-        print(value)
         self.__Test.add_treatment("searching_treatment")
         list_value = value.replace('\n', ' ')
         list_value = value.split()
         answer = ''
-        print(list_value)
         fragment_short = self.user_msg[self.user_msg.find(key) + len(key):]
         for word in list_value:
-            print(word)
             if word.isalnum():
                 if word in fragment_short:
-                    print("vai retornar")
-                    print(word)
                     answer = word
                     break
         if not answer:
-            print("retornou value")
             answer = value
         answer = answer.replace('=', '').replace("'", '').replace('"', '').replace('\\', '').replace('/','')
         return re.sub(r'^\s+|\s+$', '', answer)
@@ -396,12 +371,8 @@ class ResponseFixer:
 
         pattern = re.compile(r'\b' + re.escape(sub_normalized).replace('=', r'\s*=\s*') + r'\b')
         match = pattern.search(self.user_msg)
-        print("subnormalized")
-        print(sub_normalized)
         if match:
             match = match.group()
-            print("match")
-            print(match)
             return match
         return value
     
@@ -445,16 +416,11 @@ class ResponseFixer:
         new_list = []
         #cleaning the list
         for word in words_list:
-            print(word)
             if word != '=':
-                print("replece")
                 word = word.replace('=', ' ')
-                print(word)
             if word:
                 new_list.append(word)
 
-        print("words list")
-        print(new_list)
         possible_answer = []
 
         for word in new_list:
@@ -462,15 +428,11 @@ class ResponseFixer:
                 if word != '':
                     possible_answer.append(word)
 
-        print("possible answer")
-        print(possible_answer)
-
         response=''
 
         if '=' in possible_answer and '=' not in possible_answer[0]:
             response = '' + possible_answer[possible_answer.find('=')-1] + ' = ' + possible_answer[possible_answer.find('=')+1]
         elif index != -1 and len(possible_answer)>=2:
-            print('vai retornar isso aqui')
             response = possible_answer[0] + ' = ' + possible_answer[1]
         if response:
             return self.where_clause_normalize(response)
@@ -478,26 +440,18 @@ class ResponseFixer:
 
 
     def similarity_filter(self, key, value):
-        print("will search")
         value_list = value.split(' ')
         value_list = list(filter(lambda x: x != '', value_list))
         fragment_short = ' ' + self.user_msg[self.user_msg.find(key) + len(key):] + ' '
-        print(value_list)
         fragment_short=fragment_short.replace('=', ' ').replace(',', ' ').replace('.', ' ')
-        print(fragment_short)
         answer_list = []
         for word in value_list:
             if word.startswith('"') and word.endswith('"'):
                 word = word[1:-1]
-            print(word)
             single_word = ' ' + word.replace('\n', '') + ' '
             if single_word in fragment_short:
-                print("Passou um")
                 if word not in answer_list:
-                    print("passou dois")
                     if len(word.strip())>0:
-                        print("apendou")
-                        print(word)
                         answer_list.append(word)
 
         if len(answer_list)>0:
@@ -519,7 +473,5 @@ class ResponseFixer:
             new_answer = new_answer[1:]
         if len(new_answer)>0:
             answer = new_answer
-        print("search answer")
-        print(answer)
         return re.sub(r'^\s+|\s+$', '', answer)
     

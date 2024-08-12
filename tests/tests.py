@@ -9,7 +9,6 @@ class Test:
         self.input = self.read(self.input_file)
         self.generated_response = ""
         self.previous_output = self.read(self.output_file)
-        print(self.previous_output)
         self.find_intent = ""
         self.find_entity = ""
         self.model = ""
@@ -26,15 +25,12 @@ class Test:
             return []
 
     def write(self):
-        print("ESCREVEU")
         final_output = self.previous_output + self.output
         output_file = os.path.abspath(os.path.join(os.path.dirname(__file__), self.output_file))
         with open(output_file, 'w') as file:
             json.dump(final_output, file, indent=4)
 
     def add_treatment_flow(self):
-        print("add treatment flow")
-        print(self.treatment_used)
         if not self.treatment_used:
             return
         self.treatment_flow.append(self.treatment_used)
@@ -68,26 +64,15 @@ class Test:
                       'find_intent' : self.find_intent,
                       'find_entity' : self.find_entity,
                       'generated_result' : self.generated_response}
-        print(self.input[index])
-        print(new_output)
         new_output['treatments_used'] = []
         if self.generated_response:
             for list_index, keys in enumerate(self.generated_response.keys()):
                 if list_index >= len(self.treatment_flow)+1:
-                    print('breko')
                     break
                 if not self.generated_response[keys]: 
                     continue
-                print('keys')
-                print(list_index)
-                print(keys)
-                print("treatment_flow")
-                print(self.treatment_flow)
                 if self.treatment_flow:
                     if TREATMENT_MODE and list_index <= len(self.treatment_flow)-1:
-                        print("treatment_flow")
-                        print(self.treatment_flow)
-                        print(self.treatment_flow[list_index])
                         treatment_json = {}
                         treatment_json[keys] = self.generated_response[keys]
                         treatment_json['model'] = self.model
@@ -103,17 +88,11 @@ class Test:
 
         for keys in self.input[index]['expected_result'].keys():
             if not keys in self.generated_response:
-                print("generated response")
-                print(self.generated_response)
-                print(keys)
                 valid = False
                 break
             if self.generated_response[keys].lower() == self.input[index]['expected_result'][keys].lower():
                 valid = True
                 continue
-            print("generated response")
-            print(self.generated_response[keys])
-            print(self.input[index]['expected_result'][keys])
             valid = False
             break
             

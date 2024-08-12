@@ -167,27 +167,16 @@ class AutonomousController:
         try:
             if config.TEST_MODE:
                 index = 0
-                print('tamanho:')
-                print(len(self.__Test.previous_output))
-                print('tamanho input')
-                print(len(self.__Test.input))
                 for input in self.__Test.input:
                     if any(input.get('input') == output.get('input') for output in self.__Test.previous_output):
-                        print("achou")
                         index += 1
                         continue
-                    print("ESCREVEU")
                     self.__Test.write()
-                    print("index")
-                    print(index)
-                    print(input)
                     logger.info("test: " + input['input'])
                     if input['input'] != '':
                         response = self.app_chatbot_msg_process(input['input'], user_data=user_data)
                     else:
                         break
-                    print("response")
-                    print(response)
                     self.__Test.insert_data(index)
                     index += 1 
                 config.TEST_MODE=False
